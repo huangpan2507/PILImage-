@@ -113,7 +113,7 @@ for epoch in range(7):
 # to_img = transforms.ToPILImage()(dataset[0][0]*0.2 + 0.4)
 # 0.2和0.4是标准差和均值的近似
 # print(isinstance(to_img, Image.Image))    # true
-# print(isinstance(to_img, np.ndarray))
+# print(isinstance(to_img, np.ndarray)) 
 
 # to_img.show()
 ''' to_img.show()不行，该怎么显示该图像了？transforms.ToPILImage()(dataset[0][0].float())'''
