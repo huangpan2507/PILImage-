@@ -84,10 +84,11 @@ for epoch in range(7):
         # print('batch_datas',  batch_datas, 'batch_labels', batch_labels)
         print(len(batch_datas))
         i = i+1 
-        a = batch_datas[0]
+        a = batch_datas[0]                       # 原先为[4,3,224,224]现在取第一维度[3,224,224]
         print(a.shape)
         to_img = transforms.ToPILImage()(a * 0.2 + 0.4)
         to_img.show()
+        to_img.save('./data/{}.jpg'.format(i))    # 电脑里会保存显示的共 i（8）张照片
         print('Epoch: {} | num:{} | batch_datas: {} | batch_labels: {}'.format(
             epoch, i, batch_datas, batch_labels
         ))
