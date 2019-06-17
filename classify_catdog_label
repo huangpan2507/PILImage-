@@ -1,0 +1,63 @@
+import os
+import torch
+from PIL import Image
+from torch.utils import data
+import numpy as np
+import torchvision.transforms as transforms
+# P137 页
+
+
+transform = transforms.Compose([
+    transforms.Resize(224),
+    transforms.CenterCrop(224),
+    transforms.ToTensor(),      # 转化至至[0,1]且转化为C x H x W
+    transforms.Normalize(mean=[.5, .5, .5], std=[.5, .5, .5])  # 标准化至[-1,1]
+])
+
+
+class DogCat(data.Dataset):
+    def __init__(self, root, transforms=None):
+        imgs = os.listdir(root)                     # list类型
+        # 所有图片的绝对路径
+        # 这里不实际加载图片，只是指定路径
+        # 当调用__getitem__时才会真正读图片
+        self.imgs = [os.path.join(root, img) for img in imgs]    # list下标从 0开始，将多个路径组合后返回
+        self.transforms = transforms
+
+    def __len__(self):
+        return len(self.imgs)
+
+    def __getitem__(self, index):
+        img_path = self.imgs[index]           # 第index张图片的地址 /data/dogcat/index的图片  imgs为list类型
+        print('img_path', img_path)
+        # dog ->1  cat ->0, .split('/')[-1]:以/为分隔符，取最后一个/后的字符串
+        label = 1 if 'dog' in img_path.split('/')[-1] else 0
+        pil_img = Image.open(img_path)
+        print('before_pil_img ', pil_img)
+        if self.transforms:
+            pil_img = self.transforms(pil_img)   # 此处将图片经数据预处理函数转化
+        '''pil_img.show()   单独设置数据处理函数后，此处不再是图片
+        # 转化为numpy数组
+        如果没有单独定义一个处理函数，则在下面两句处理
+        array = np.asarray(pil_img)
+        data = torch.from_numpy(array) '''
+        return pil_img, label
+
+
+dataset = DogCat('./data/dogcat/', transforms=transform)
+print('dataset', dataset)   # 打印的为 ：dataset <__main__.DogCat object at 0x000000000BF7DB38>
+img, label = dataset[0]     # 相当于调用dataset.__getitem__(0),这里初始index设置为0，跳转至__getitem__方法，
+# 输出index为0的地址的图片的tensor
+i = 0
+for img, label in dataset:  # 运行到这里，index重新变为0 ，上面打印的是index为0的图片,文件夹有8张图片，迭代8次
+    i = i+1
+    print('Epoch: {} | img: {} | img.size: {} | img.mean: {} | label: {}'.format(i, img, img.size(), img.float().mean(),
+                                                                                 label))
+
+
+
+
+
+
+
+
