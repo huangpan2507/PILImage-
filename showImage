@@ -71,7 +71,12 @@ transform = transforms.Compose([
 
 dataset = ImageFolder('./data/', transform=transform)
 idx = dataset.class_to_idx
+weights = [2 if label == 1 else 1 for data, label in dataset]  # 设置权重，根据权重采样数据
 print('dataset[0][0]', dataset[0][0], dataset[0][0].size())
+
+# weight 权重，num_samples选取的样本数目，以及replacement可以重复选取某个样本。一般num_samples比总样本数小，weight才有效。
+sampler = WeightedRandomSampler(
+    weights,  num_samples=8, replacement=True)
 dataloader = DataLoader(dataset, batch_size=1, shuffle=False, num_workers=0, drop_last=False)
 
 
