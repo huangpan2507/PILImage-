@@ -41,7 +41,8 @@ dataset[0][0].size()    # 深度学习中图片一般保存成C*H*W
 # ndarray的数据类型要求dtype=uint8, range[0, 255] and shape H x W x C
 # Tensor 的shape为 C x H x W 要求是FloadTensor的，不允许DoubleTensor或者其他类型 
 # 所以，transforms.ToPILImage()(里面不加dataset[0][0]*0.2 + 0.4)则to_img只是ToPILImage，还未转化
-# 或者transforms.ToPILImage()(dataset[0][0].float()) 要得满足转化的数据类型条件，但此时的图片是乱的
+# 或者分两步 ，to_pil=transforms.ToPILImage()， to_pil(满足要求的numpy或者tensor)
+# transforms.ToPILImage()(dataset[0][0].float()) 要得满足转化的数据类型条件，但此时的图片是乱的
 
 to_img = transforms.ToPILImage()(dataset[0][0]*0.2 + 0.4)
 # 0.2和0.4是标准差和均值的近似
